@@ -1,9 +1,11 @@
 package com.example.mt_weather
 
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.example.mt_weather.databinding.ActivityMainBinding
 import com.example.mt_weather.model.Weather
+import com.example.mt_weather.databinding.ActivityMainBinding
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -13,15 +15,16 @@ class MainActivity : AppCompatActivity() {
 
     // Seznam možných počasí
     private val weatherData = listOf(
-        Weather("Prague", 20, "Cloudy"),
+        Weather("Praha", 20, "Cloudy"),
         Weather("Brno", 25, "Sunny"),
         Weather("Ostrava", 18, "Rainy"),
-        Weather("Plzen", 22, "Partly Cloudy"),
-        Weather("Olomouc", 19, "Windy")
+        Weather("Plzeň", 22, "Partly Cloudy"),
+        Weather("Nedakonice", 19, "Windy")
     )
 
     private var currentWeather: Weather? = null
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Obnovení uloženého stavu, pokud existuje
-        currentWeather = savedInstanceState?.getParcelable("weather") ?: getRandomWeather()
+        // Obnovení
+        currentWeather = savedInstanceState?.getParcelable("weather", Weather::class.java) ?: getRandomWeather()
 
         // Zobrazení aktuálního počasí
         displayWeather(currentWeather!!)
@@ -42,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Uložení stavu při změně konfigurace (např. otočení obrazovky)
+    // Uložení stavu při změně konfigurace
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("weather", currentWeather)
